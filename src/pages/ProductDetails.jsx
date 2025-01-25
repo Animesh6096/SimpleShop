@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { products } from '../data/products';
-import { Link } from 'react-router-dom';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -13,14 +12,14 @@ const ProductDetails = () => {
   if (!product) return <div>Product not found</div>;
 
   return (
-    <>
+    <div className="container">
       <div className="back-navigation">
-        <Link to="/" className="back-button">← Back to Products</Link>
+        <Link to="/" className="back-button compact">← Back to Products</Link>
       </div>
 
       <div className="product-details">
         <div className="product-gallery">
-          <div className="product-details-image">
+          <div className="product-main-image">
             <img src={product.images[selectedImage]} alt={product.name} />
           </div>
           <div className="product-thumbnails">
@@ -36,15 +35,17 @@ const ProductDetails = () => {
           </div>
         </div>
         <div className="product-details-info">
-          <h2>{product.name}</h2>
+          <div className="product-header">
+            <h2>{product.name}</h2>
+            <p className="price">${product.price}</p>
+          </div>
           <p className="description">{product.description}</p>
-          <p className="price">${product.price}</p>
-          <button onClick={() => addToCart(product)}>
+          <button onClick={() => addToCart(product)} className="add-to-cart-button">
             Add to Cart
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

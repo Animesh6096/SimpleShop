@@ -4,15 +4,32 @@ import { products } from '../data/products';
 
 const Cart = () => {
   const { cart, removeFromCart } = useCart();
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
 
   const getProductImages = (productId) => {
     const product = products.find(p => p.id === productId);
-    return product?.images[0] || product?.image;
+    return product?.images?.[0] || product?.image;
   };
 
+  const calculateTotal = () => {
+    return cart.reduce((total, item) => {
+      return total + (item.price * (item.quantity || 1));
+    }, 0);
+  };
+
+  if (!cart || cart.length === 0) {
+    return (
+      <div className="container">
+        <div className="empty-cart-container">
+          <h2 className="page-title">Your Cart is Empty</h2>
+          <p className="empty-cart-message">Add some products to your cart</p>
+          <Link to="/" className="back-button compact">← Continue Shopping</Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <>
+    <div className="container">
       <div className="back-navigation">
         <Link to="/" className="back-button">← Continue Shopping</Link>
       </div>
@@ -24,25 +41,30 @@ const Cart = () => {
             <div key={item.id} className="cart-item">
               <img src={getProductImages(item.id)} alt={item.name} />
               <div className="cart-item-info">
-                <h3>{item.name}</h3>
-                <p>{item.description}</p>
+                <h3 className="item-title">{item.name}</h3>
+                <p className="item-description">{item.description}</p>
               </div>
-              <p className="price">${item.price}</p>
-              <button onClick={() => removeFromCart(item.id)} className="remove-button">
+              <div className="cart-item-quantity">
+                <p className="price">${(item.price * (item.quantity || 1)).toFixed(2)}</p>
+                <div className="quantity">Qty: {item.quantity || 1}</div>
+              </div>
+              <button onClick={() => removeFromCart(item.id)} className="remove-button compact">
                 Remove
               </button>
             </div>
           ))}
         </div>
         
-        <div className="cart-total">
-          <h3>Total: ${total.toFixed(2)}</h3>
-          <button onClick={() => window.location.href='/checkout'} className="checkout-button">
-            Proceed to Checkout
-          </button>
+        <div className="cart-summary">
+          <div className="cart-total">
+            <h3>Total: ${calculateTotal().toFixed(2)}</h3>
+            <Link to="/checkout" className="checkout-button">
+              Proceed to Checkout
+            </Link>
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,11 +1,8 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
 const Navbar = () => {
-  const { cart } = useCart();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const isHome = location.pathname === '/';
+  const { getCartCount } = useCart();
 
   return (
     <nav className="navbar">
@@ -16,17 +13,10 @@ const Navbar = () => {
           </span>
         </Link>
         
-        <div className="nav-buttons">
-          {!isHome && (
-            <button onClick={() => navigate(-1)} className="back-button">
-              ← Back
-            </button>
-          )}
-          <Link to="/cart" className="cart-button">
-            <span role="img" aria-label="cart">🛒</span>
-            <span>Cart ({cart.length})</span>
-          </Link>
-        </div>
+        <Link to="/cart" className="cart-button">
+          <span role="img" aria-label="cart">🛒</span>
+          <span>Cart ({getCartCount()})</span>
+        </Link>
       </div>
     </nav>
   );
